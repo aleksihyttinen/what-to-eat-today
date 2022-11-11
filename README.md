@@ -2,7 +2,7 @@
 Personal project  
 (Work in progress)
 
-#TODO  
+# TODO  
 Add JWT to authentication  
 Update react state after adding/modifying foods  
 Add personal food lists for users  
