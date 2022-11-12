@@ -9,43 +9,78 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 interface IProps {
   modalOpen: boolean;
   setModalOpen: Function;
   foods: IFood[];
+  setFoods: Function;
 }
 
 interface IFood {
   _id: string;
+  user_id: string;
   name: string;
 }
 
-export default function EditFoods({ modalOpen, setModalOpen, foods }: IProps) {
+export default function EditFoods({
+  modalOpen,
+  setModalOpen,
+  foods,
+  setFoods,
+}: IProps) {
   const [editedFoods, setEditedFoods] = useState<IFood[]>(
     JSON.parse(JSON.stringify(foods))
   );
+  const auth = useAuth();
+  const navigate = useNavigate();
   const handleClose = () => {
     setEditedFoods(foods);
     setModalOpen(false);
   };
   const handleChange = (index: number) => (e: any) => {
+    console.log(e.target.value);
     let tempArr = [...editedFoods];
     tempArr[index].name = e.target.value;
     setEditedFoods(tempArr);
   };
   const handleUpdate = () => {
-    axios.put(`http://localhost:8080/foods`, editedFoods).then((response) => {
+    let newArr: IFood[] = [];
+    foods.forEach((food, index) => {
+      if (food.name !== editedFoods[index].name) {
+        newArr.push(editedFoods[index]);
+      }
+    });
+
+    axios.put(`http://localhost:8080/foods`, newArr).then((response) => {
       console.log(response);
       setModalOpen(false);
+      if (response.status == 200) {
+        setFoods(editedFoods);
+      }
     });
   };
   const deleteFood = (id: any) => () => {
     console.log(id);
-    axios.delete(`http://localhost:8080/foods/${id}`).then((response) => {
-      console.log(response);
-      setModalOpen(false);
-    });
+    axios
+      .delete(`http://localhost:8080/foods/${id}`)
+      .then((response) => {
+        console.log(response);
+        if (response.status == 200) {
+          setEditedFoods(editedFoods.filter((food) => food._id != id));
+          setFoods(foods.filter((food) => food._id != id));
+        }
+      })
+      .catch((err) => {
+        if (err.response.status == 403) {
+          alert("Kirjaudu sisään uudelleen");
+          auth?.signout();
+          navigate("/login", { replace: true });
+        }
+        console.log(err);
+      });
   };
   return (
     <div>

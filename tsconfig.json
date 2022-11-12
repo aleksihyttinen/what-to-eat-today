@@ -13,7 +13,5 @@
     }
   },
   "include": ["backend/*"],
-    "exclude": [
-      "./frontend/*"
-    ]
+  "exclude": ["./frontend/*"]
 }

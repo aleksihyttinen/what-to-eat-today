@@ -34,9 +34,15 @@ function useProvideAuth() {
       })
       .then((response) => {
         console.log(response);
-        response.data == "Authenticated"
-          ? setAuthenticated(true)
-          : setAuthFailed(true);
+        if (response.data.msg == "Authenticated") {
+          setAuthenticated(true);
+          localStorage.setItem("user", response.data.accessToken);
+          axios.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${response.data.accessToken}`;
+        } else {
+          setAuthFailed(true);
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -55,6 +61,7 @@ function useProvideAuth() {
   };
   const signout = () => {
     setAuthenticated(false);
+    localStorage.clear();
   };
   // Return the user object and auth methods
   return {

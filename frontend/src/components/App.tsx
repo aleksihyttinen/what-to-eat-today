@@ -4,24 +4,42 @@ import axios from "axios";
 import Button from "@mui/material/Button";
 import EditFoods from "./EditFoods";
 import AddFood from "./AddFood";
+import { useAuth } from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 interface IFood {
   _id: string;
+  user_id: string;
   name: string;
 }
 function App() {
-  let [foods, setFoods] = useState<IFood[]>([]);
-  let [randomNumber, setRandomNumber] = useState<number>(0);
-  let [btnClicked, setBtnClicked] = useState<boolean>(false);
-  let [editModalOpen, setEditModalOpen] = useState<boolean>(false);
-  let [newModalOpen, setNewModalOpen] = useState<boolean>(false);
+  const [foods, setFoods] = useState<IFood[]>([]);
+  const [randomNumber, setRandomNumber] = useState<number>(0);
+  const [btnClicked, setBtnClicked] = useState<boolean>(false);
+  const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
+  const [newModalOpen, setNewModalOpen] = useState<boolean>(false);
+
+  const auth = useAuth();
+  const navigate = useNavigate();
   useEffect(() => {
+    if (localStorage.getItem("user")) {
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${localStorage.getItem("user")}`;
+    }
     axios
       .get("http://localhost:8080/foods")
       .then((response) => {
         setFoods(response.data);
-        console.log(response.data);
+        console.log(response);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        if (err.response.status == 403) {
+          alert("Kirjaudu sisään uudelleen");
+          auth?.signout();
+          navigate("/login", { replace: true });
+        }
+        console.log(err);
+      });
   }, []);
   let onClick = () => {
     setBtnClicked(!btnClicked);
@@ -31,29 +49,41 @@ function App() {
 
   return (
     <div className="App">
-      <div className="container">
+      <Button
+        sx={{ position: "absolute", top: "1rem", right: "1rem" }}
+        variant="text"
+        size="large"
+        onClick={() => {
+          auth?.signout();
+          navigate("/login", { replace: true });
+        }}
+      >
+        Kirjaudu ulos
+      </Button>
+      {
+        <h1
+          className="word"
+          style={
+            btnClicked ? { visibility: "visible" } : { visibility: "hidden" }
+          }
+        >
+          {btnClicked ? foods[randomNumber].name : "Ladataan"}
+        </h1>
+      }
+      <div className="buttons">
         <Button variant="contained" size="large" onClick={onClick}>
           {!btnClicked ? "Mitä söisin tänään?" : "Aloita alusta"}
         </Button>
-        {
-          <div
-            style={
-              btnClicked ? { visibility: "visible" } : { visibility: "hidden" }
-            }
-            className="food"
-          >
-            {btnClicked ? foods[randomNumber].name : "Ladataan"}
-          </div>
-        }
+
         <Button
-          variant="contained"
+          variant="outlined"
           size="large"
           onClick={() => setNewModalOpen(true)}
         >
           {"Lisää uusi ruoka"}
         </Button>
         <Button
-          variant="contained"
+          variant="outlined"
           size="large"
           onClick={() => setEditModalOpen(true)}
         >
@@ -65,12 +95,17 @@ function App() {
           modalOpen={editModalOpen}
           setModalOpen={setEditModalOpen}
           foods={foods}
+          setFoods={setFoods}
         />
       ) : (
         <></>
       )}
       {newModalOpen ? (
-        <AddFood modalOpen={newModalOpen} setModalOpen={setNewModalOpen} />
+        <AddFood
+          modalOpen={newModalOpen}
+          setModalOpen={setNewModalOpen}
+          setFoods={setFoods}
+        />
       ) : (
         <></>
       )}

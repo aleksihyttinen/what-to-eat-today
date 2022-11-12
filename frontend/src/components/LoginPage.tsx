@@ -13,7 +13,7 @@ export default function LoginPage() {
     if (auth?.authenticated) {
       navigate("/", { replace: true });
     }
-  }, [auth?.authenticated, auth?.authFailed]);
+  }, [auth?.authenticated]);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();

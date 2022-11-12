@@ -12,15 +12,15 @@ interface IUser {
 //Connection functions return a promise of a sql query
 const connectionFunctions = {
   //Get all user from database
-  getAllFoods: async () => {
+  getAllFoods: async (userId: string) => {
     await client.connect();
     console.log("Connected successfully to server");
     const db = client.db(dbName);
     const collection = db.collection("foods");
-    const result = await collection.find({}).toArray();
+    const result = await collection.find({ user_id: userId }).toArray();
     return result;
   },
-  editFoods: async (id: string, newName: string) => {
+  editFood: async (id: string, newName: string) => {
     await client.connect();
     console.log("Connected successfully to server");
     const db = client.db(dbName);
@@ -40,23 +40,26 @@ const connectionFunctions = {
     console.log(deleteResult);
     return deleteResult;
   },
-  addFood: async (foodName: string) => {
+  addFood: async (foodName: string, userId: string) => {
     await client.connect();
     console.log("Connected successfully to server");
     const db = client.db(dbName);
     const collection = db.collection("foods");
-    const insertResult = await collection.insertOne({ name: foodName });
+    const insertResult = await collection.insertOne({
+      user_id: userId,
+      name: foodName,
+    });
     console.log(insertResult);
     return insertResult;
   },
-  users: async (userEmail: string): Promise<IUser[]> => {
+  findUser: async (userEmail: string): Promise<IUser> => {
     console.log(userEmail);
     await client.connect();
     console.log("Connected successfully to server");
     const db = client.db("users");
     const collection = db.collection("users");
     const result = await collection.find({ email: userEmail }).toArray();
-    return result;
+    return result[0];
   },
   addUser: async (user: IUser) => {
     await client.connect();

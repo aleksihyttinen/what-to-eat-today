@@ -14,7 +14,11 @@ function RequireAuth({ children }: any) {
   //Get current auth status from useAuth hook and route accordingly
   const auth = useAuth();
   //If authorized route to oroginal route, else route to login page
-  return auth?.authenticated ? children : <Navigate to="/login" replace />;
+  return auth?.authenticated || localStorage.getItem("user") ? (
+    children
+  ) : (
+    <Navigate to="/login" replace />
+  );
 }
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
