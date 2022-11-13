@@ -1,12 +1,11 @@
 const { MongoClient } = require("mongodb");
-import * as dotenv from "dotenv";
-dotenv.config();
+require("dotenv").config();
 var ObjectID = require("mongodb").ObjectID;
 const url = process.env.DB_URL;
 const client = new MongoClient(url);
 const dbName = "foods";
 interface IUser {
-  email: string;
+  name: string;
   password: string;
 }
 //Connection functions return a promise of a sql query
@@ -52,13 +51,13 @@ const connectionFunctions = {
     console.log(insertResult);
     return insertResult;
   },
-  findUser: async (userEmail: string): Promise<IUser> => {
-    console.log(userEmail);
+  findUser: async (userName: string): Promise<IUser> => {
+    console.log(userName);
     await client.connect();
     console.log("Connected successfully to server");
     const db = client.db("users");
     const collection = db.collection("users");
-    const result = await collection.find({ email: userEmail }).toArray();
+    const result = await collection.find({ name: userName }).toArray();
     return result[0];
   },
   addUser: async (user: IUser) => {
@@ -67,7 +66,7 @@ const connectionFunctions = {
     const db = client.db("users");
     const collection = db.collection("users");
     const result = await collection.insertOne({
-      email: user.email,
+      name: user.name,
       password: user.password,
     });
     return result;

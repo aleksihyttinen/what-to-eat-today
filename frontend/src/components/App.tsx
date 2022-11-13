@@ -6,6 +6,9 @@ import EditFoods from "./EditFoods";
 import AddFood from "./AddFood";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { RandomReveal } from "react-random-reveal";
+import AppBar from "./AppBar";
+import { List, ListItem, ListItemText } from "@mui/material";
 interface IFood {
   _id: string;
   user_id: string;
@@ -17,6 +20,7 @@ function App() {
   const [btnClicked, setBtnClicked] = useState<boolean>(false);
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [newModalOpen, setNewModalOpen] = useState<boolean>(false);
+  const [requestDone, setRequestDone] = useState<boolean>(false);
 
   const auth = useAuth();
   const navigate = useNavigate();
@@ -27,10 +31,11 @@ function App() {
       ] = `Bearer ${localStorage.getItem("user")}`;
     }
     axios
-      .get("http://localhost:8080/foods")
+      .get("https://what-to-eat-today.azurewebsites.net/foods")
       .then((response) => {
         setFoods(response.data);
         console.log(response);
+        setRequestDone(true);
       })
       .catch((err) => {
         if (err.response.status == 403) {
@@ -49,66 +54,61 @@ function App() {
 
   return (
     <div className="App">
-      <Button
-        sx={{ position: "absolute", top: "1rem", right: "1rem" }}
-        variant="text"
-        size="large"
-        onClick={() => {
-          auth?.signout();
-          navigate("/login", { replace: true });
-        }}
-      >
-        Kirjaudu ulos
-      </Button>
-      {
-        <h1
-          className="word"
-          style={
-            btnClicked ? { visibility: "visible" } : { visibility: "hidden" }
-          }
-        >
-          {btnClicked ? foods[randomNumber].name : "Ladataan"}
-        </h1>
-      }
-      <div className="buttons">
-        <Button variant="contained" size="large" onClick={onClick}>
-          {!btnClicked ? "Mitä söisin tänään?" : "Aloita alusta"}
-        </Button>
+      <AppBar
+        setNewModalOpen={setNewModalOpen}
+        setEditModalOpen={setEditModalOpen}
+      />
+      <div className="Container">
+        {foods.length != 0 ? (
+          <div style={{ fontSize: "3rem" }}>
+            {btnClicked ? (
+              <RandomReveal
+                isPlaying
+                duration={3}
+                characters={foods[randomNumber].name}
+              />
+            ) : (
+              "Mitä söisin tänään?"
+            )}
+          </div>
+        ) : (
+          <div style={{ fontSize: "3rem" }}>
+            {requestDone
+              ? "Lisää ruokia, jotta voit käyttää sovellusta"
+              : "Ladataan"}
+          </div>
+        )}
 
         <Button
-          variant="outlined"
+          disabled={!requestDone}
+          variant="contained"
           size="large"
-          onClick={() => setNewModalOpen(true)}
+          onClick={onClick}
+          sx={{ mt: "5rem", width: "160px" }}
         >
-          {"Lisää uusi ruoka"}
+          {!btnClicked ? "Arvo ruoka" : "Aloita alusta"}
         </Button>
-        <Button
-          variant="outlined"
-          size="large"
-          onClick={() => setEditModalOpen(true)}
-        >
-          {"Muokkaa ruokia"}
-        </Button>
+
+        {editModalOpen ? (
+          <EditFoods
+            modalOpen={editModalOpen}
+            setModalOpen={setEditModalOpen}
+            foods={foods}
+            setFoods={setFoods}
+          />
+        ) : (
+          <></>
+        )}
+        {newModalOpen ? (
+          <AddFood
+            modalOpen={newModalOpen}
+            setModalOpen={setNewModalOpen}
+            setFoods={setFoods}
+          />
+        ) : (
+          <></>
+        )}
       </div>
-      {editModalOpen ? (
-        <EditFoods
-          modalOpen={editModalOpen}
-          setModalOpen={setEditModalOpen}
-          foods={foods}
-          setFoods={setFoods}
-        />
-      ) : (
-        <></>
-      )}
-      {newModalOpen ? (
-        <AddFood
-          modalOpen={newModalOpen}
-          setModalOpen={setNewModalOpen}
-          setFoods={setFoods}
-        />
-      ) : (
-        <></>
-      )}
     </div>
   );
 }

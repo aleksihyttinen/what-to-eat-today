@@ -1,8 +1,4 @@
 {
-    "appService.defaultWebAppToDeploy": "/subscriptions/0813bad0-2a4d-4bbb-a02d-ca5780344698/AppServices/subscriptions/0813bad0-2a4d-4bbb-a02d-ca5780344698/resourceGroups/what-to-eat-today/providers/Microsoft.Web/sites/what-to-eat-today",
-    "appService.deploySubpath": ".",
-    "appService.zipIgnorePattern": [
-        "node_modules{,/**}",
-        ".vscode{,/**}"
-    ]
+  "appService.defaultWebAppToDeploy": "/subscriptions/0813bad0-2a4d-4bbb-a02d-ca5780344698/AppServices/subscriptions/0813bad0-2a4d-4bbb-a02d-ca5780344698/resourceGroups/what-to-eat-today/providers/Microsoft.Web/sites/what-to-eat-today",
+  "appService.deploySubpath": "."
 }

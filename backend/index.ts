@@ -11,7 +11,7 @@ interface IFood {
   name: string;
 }
 interface IUser {
-  email: string;
+  name: string;
   password: string;
 }
 app.use(cors());
@@ -98,7 +98,7 @@ app.post(
 app.post("/register", async (req: express.Request, res: express.Response) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const user = { email: req.body.email, password: hashedPassword };
+    const user = { name: req.body.name, password: hashedPassword };
     let result = await connection.addUser(user);
     res.statusCode = 201;
     res.send({
@@ -111,7 +111,7 @@ app.post("/register", async (req: express.Request, res: express.Response) => {
 });
 //login
 app.post("/login", async (req: express.Request, res: express.Response) => {
-  const user: IUser = await connection.findUser(req.body.email);
+  const user: IUser = await connection.findUser(req.body.name);
   const accessToken = generateAccessToken(user);
   if (user == null) {
     res.status(500);

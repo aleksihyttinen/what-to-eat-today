@@ -19,18 +19,18 @@ export default function LoginPage() {
     e.preventDefault();
     if (loginType) {
       auth?.signup({
-        userEmail: e.target.email.value,
+        userName: e.target.username.value,
         userPassword: e.target.password.value,
       });
     } else {
       auth?.signin({
-        userEmail: e.target.email.value,
+        userName: e.target.username.value,
         userPassword: e.target.password.value,
       });
     }
   };
   return (
-    <div className="App">
+    <div className="Login">
       <Typography variant="h3" sx={{ mb: 3 }}>
         {!loginType ? "Kirjaudu sisään" : "Rekisteröidy"}
       </Typography>
@@ -49,10 +49,10 @@ export default function LoginPage() {
           margin="normal"
           required
           fullWidth
-          id="email"
-          label="Sähköposti"
-          name="email"
-          autoComplete="email"
+          id="username"
+          label="Käyttäjänimi"
+          name="username"
+          autoComplete="username"
           autoFocus
         />
         <TextField

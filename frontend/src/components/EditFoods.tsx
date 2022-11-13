@@ -11,6 +11,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { Typography } from "@mui/material";
 
 interface IProps {
   modalOpen: boolean;
@@ -54,18 +55,20 @@ export default function EditFoods({
       }
     });
 
-    axios.put(`http://localhost:8080/foods`, newArr).then((response) => {
-      console.log(response);
-      setModalOpen(false);
-      if (response.status == 200) {
-        setFoods(editedFoods);
-      }
-    });
+    axios
+      .put(`https://what-to-eat-today.azurewebsites.net/foods`, newArr)
+      .then((response) => {
+        console.log(response);
+        setModalOpen(false);
+        if (response.status == 200) {
+          setFoods(editedFoods);
+        }
+      });
   };
   const deleteFood = (id: any) => () => {
     console.log(id);
     axios
-      .delete(`http://localhost:8080/foods/${id}`)
+      .delete(`https://what-to-eat-today.azurewebsites.net/foods/${id}`)
       .then((response) => {
         console.log(response);
         if (response.status == 200) {
@@ -87,17 +90,21 @@ export default function EditFoods({
       <Dialog open={modalOpen} onClose={handleClose}>
         <DialogTitle>Muokkaa ruokia</DialogTitle>
         <DialogContent>
-          {editedFoods.map((food, index) => (
-            <span key={food._id}>
-              <TextField
-                value={food.name}
-                onChange={handleChange(index)}
-              ></TextField>
-              <IconButton aria-label="delete" onClick={deleteFood(food._id)}>
-                <DeleteIcon />
-              </IconButton>
-            </span>
-          ))}
+          {editedFoods.length != 0 ? (
+            editedFoods.map((food, index) => (
+              <span key={food._id}>
+                <TextField
+                  value={food.name}
+                  onChange={handleChange(index)}
+                ></TextField>
+                <IconButton aria-label="delete" onClick={deleteFood(food._id)}>
+                  <DeleteIcon />
+                </IconButton>
+              </span>
+            ))
+          ) : (
+            <Typography>Ruokia ei löytynyt</Typography>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Sulje</Button>

@@ -1,14 +1,14 @@
 import axios from "axios";
 import React, { useState, useEffect, useContext, createContext } from "react";
 interface IUser {
-  userEmail: string;
+  userName: string;
   userPassword: string;
 }
 interface IAuth {
   authenticated: boolean;
   authFailed: boolean;
-  signin: ({ userEmail, userPassword }: IUser) => void;
-  signup: ({ userEmail, userPassword }: IUser) => void;
+  signin: ({ userName, userPassword }: IUser) => void;
+  signup: ({ userName, userPassword }: IUser) => void;
   signout: () => any;
 }
 const authContext = createContext<IAuth | null>(null);
@@ -26,10 +26,10 @@ function useProvideAuth() {
   const [authenticated, setAuthenticated] = useState(false);
   const [authFailed, setAuthFailed] = useState(false);
 
-  const signin = ({ userEmail, userPassword }: IUser) => {
+  const signin = ({ userName, userPassword }: IUser) => {
     axios
-      .post("http://localhost:8080/login", {
-        email: userEmail,
+      .post("https://what-to-eat-today.azurewebsites.net/login", {
+        name: userName,
         password: userPassword,
       })
       .then((response) => {
@@ -49,10 +49,10 @@ function useProvideAuth() {
         setAuthFailed(true);
       });
   };
-  const signup = ({ userEmail, userPassword }: IUser) => {
+  const signup = ({ userName, userPassword }: IUser) => {
     axios
-      .post("http://localhost:8080/register", {
-        email: userEmail,
+      .post("https://what-to-eat-today.azurewebsites.net/register", {
+        name: userName,
         password: userPassword,
       })
       .then((response) => {

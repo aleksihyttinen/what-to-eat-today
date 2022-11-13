@@ -33,7 +33,7 @@ export default function AddFood({ modalOpen, setModalOpen, setFoods }: IProps) {
 
   const handleUpdate = () => {
     axios
-      .post(`http://localhost:8080/foods`, {
+      .post(`https://what-to-eat-today.azurewebsites.net/foods`, {
         name: newFood,
       })
       .then((response) => {
