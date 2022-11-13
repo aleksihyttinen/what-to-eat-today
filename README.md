@@ -10,7 +10,7 @@ so now you can have an app tell you what to eat instead of arguing about it.
 # Tech/Framework used
 Frontend: React.js and Material UI  
 Backend: Node.js and Express  
-(both stacks with TypeScript)
+(both stacks with TypeScript)  
 Database: Azure Cosmos DB with MongoDB API
 
 # Features
