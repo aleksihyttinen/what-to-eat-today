@@ -2,18 +2,13 @@ import express, { response } from "express";
 import connection from "./db";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import IFood from "../frontend/src/interfaces/IFood";
+import IUser from "../frontend/src/interfaces/IUser";
 require("dotenv").config();
 const app = express();
 const path = require("path");
 const cors = require("cors");
-interface IFood {
-  _id: string;
-  name: string;
-}
-interface IUser {
-  name: string;
-  password: string;
-}
+
 app.use(cors());
 app.use(express.static(path.join(__dirname + "/../frontend/build/")));
 app.use(express.json());
@@ -98,7 +93,7 @@ app.post(
 app.post("/register", async (req: express.Request, res: express.Response) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const user = { name: req.body.name, password: hashedPassword };
+    const user = { userName: req.body.name, userPassword: hashedPassword };
     let result = await connection.addUser(user);
     res.statusCode = 201;
     res.send({
@@ -117,7 +112,7 @@ app.post("/login", async (req: express.Request, res: express.Response) => {
     res.status(500);
   }
   try {
-    if (await bcrypt.compare(req.body.password, user.password)) {
+    if (await bcrypt.compare(req.body.password, user.userPassword)) {
       res.send({
         accessToken: accessToken,
         msg: "Authenticated",

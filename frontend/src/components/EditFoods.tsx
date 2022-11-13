@@ -3,27 +3,21 @@ import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { Typography } from "@mui/material";
+import IFood from "../interfaces/IFood";
 
 interface IProps {
   modalOpen: boolean;
   setModalOpen: Function;
   foods: IFood[];
   setFoods: Function;
-}
-
-interface IFood {
-  _id: string;
-  user_id: string;
-  name: string;
 }
 
 export default function EditFoods({
@@ -48,19 +42,19 @@ export default function EditFoods({
     setEditedFoods(tempArr);
   };
   const handleUpdate = () => {
-    let newArr: IFood[] = [];
+    let hasChanged: IFood[] = [];
     foods.forEach((food, index) => {
       if (food.name !== editedFoods[index].name) {
-        newArr.push(editedFoods[index]);
+        hasChanged.push(editedFoods[index]);
       }
     });
 
     axios
-      .put(`https://what-to-eat-today.azurewebsites.net/foods`, newArr)
+      .put(`https://what-to-eat-today.azurewebsites.net/foods`, hasChanged)
       .then((response) => {
         console.log(response);
         setModalOpen(false);
-        if (response.status == 200) {
+        if (response.status === 200) {
           setFoods(editedFoods);
         }
       });
@@ -71,13 +65,13 @@ export default function EditFoods({
       .delete(`https://what-to-eat-today.azurewebsites.net/foods/${id}`)
       .then((response) => {
         console.log(response);
-        if (response.status == 200) {
-          setEditedFoods(editedFoods.filter((food) => food._id != id));
-          setFoods(foods.filter((food) => food._id != id));
+        if (response.status === 200) {
+          setEditedFoods(editedFoods.filter((food) => food._id !== id));
+          setFoods(foods.filter((food) => food._id !== id));
         }
       })
       .catch((err) => {
-        if (err.response.status == 403) {
+        if (err.response.status === 403) {
           alert("Kirjaudu sisään uudelleen");
           auth?.signout();
           navigate("/login", { replace: true });
@@ -90,7 +84,7 @@ export default function EditFoods({
       <Dialog open={modalOpen} onClose={handleClose}>
         <DialogTitle>Muokkaa ruokia</DialogTitle>
         <DialogContent>
-          {editedFoods.length != 0 ? (
+          {editedFoods.length !== 0 ? (
             editedFoods.map((food, index) => (
               <span key={food._id}>
                 <TextField

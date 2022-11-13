@@ -1,16 +1,8 @@
 import axios from "axios";
-import React, { useState, useEffect, useContext, createContext } from "react";
-interface IUser {
-  userName: string;
-  userPassword: string;
-}
-interface IAuth {
-  authenticated: boolean;
-  authFailed: boolean;
-  signin: ({ userName, userPassword }: IUser) => void;
-  signup: ({ userName, userPassword }: IUser) => void;
-  signout: () => any;
-}
+import { useState, useContext, createContext } from "react";
+import IAuth from "../interfaces/IAuth";
+import IUser from "../interfaces/IUser";
+
 const authContext = createContext<IAuth | null>(null);
 export function ProvideAuth({ children }: any) {
   const auth = useProvideAuth();
@@ -34,7 +26,7 @@ function useProvideAuth() {
       })
       .then((response) => {
         console.log(response);
-        if (response.data.msg == "Authenticated") {
+        if (response.data.msg === "Authenticated") {
           setAuthenticated(true);
           localStorage.setItem("user", response.data.accessToken);
           axios.defaults.headers.common[

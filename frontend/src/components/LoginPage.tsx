@@ -1,5 +1,4 @@
-import { Box, Button, Grid, Link, TextField, Typography } from "@mui/material";
-import axios from "axios";
+import { Box, Button, Link, TextField, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
@@ -13,7 +12,7 @@ export default function LoginPage() {
     if (auth?.authenticated) {
       navigate("/", { replace: true });
     }
-  }, [auth?.authenticated]);
+  }, [auth?.authenticated, navigate]);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -38,12 +37,11 @@ export default function LoginPage() {
         component="form"
         onSubmit={handleSubmit}
         noValidate
-        sx={{ mt: 1, width: "25%" }}
+        sx={{ mt: 1, maxWidth: "500px" }}
         method="POST"
       >
         <Typography variant="subtitle1" sx={{ color: "grey", mb: 3 }}>
-          Sisäänkirjautuneena, voit luoda oman ruokalistasi, muuten käytössäsi
-          on vain ennalta määritellyt ruuat.
+          Kirjaudu sisään, jotta voit luoda oman ruokalistasi.
         </Typography>
         <TextField
           margin="normal"

@@ -3,24 +3,17 @@ import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import IFood from "../interfaces/IFood";
 
 interface IProps {
   modalOpen: boolean;
   setModalOpen: Function;
   setFoods: Function;
-}
-interface IFood {
-  _id: string;
-  user_id: string;
-  name: string;
 }
 
 export default function AddFood({ modalOpen, setModalOpen, setFoods }: IProps) {
@@ -40,12 +33,12 @@ export default function AddFood({ modalOpen, setModalOpen, setFoods }: IProps) {
         console.log(newFood);
         console.log(response);
         setModalOpen(false);
-        if (response.status == 201) {
+        if (response.status === 201) {
           setFoods((oldFoods: IFood[]) => [...oldFoods, response.data]);
         }
       })
       .catch((err) => {
-        if (err.response.status == 403) {
+        if (err.response.status === 403) {
           alert("Kirjaudu sisään uudelleen");
           auth?.signout();
           navigate("/login", { replace: true });

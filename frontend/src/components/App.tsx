@@ -8,12 +8,8 @@ import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { RandomReveal } from "react-random-reveal";
 import AppBar from "./AppBar";
-import { List, ListItem, ListItemText } from "@mui/material";
-interface IFood {
-  _id: string;
-  user_id: string;
-  name: string;
-}
+import IFood from "../interfaces/IFood";
+
 function App() {
   const [foods, setFoods] = useState<IFood[]>([]);
   const [randomNumber, setRandomNumber] = useState<number>(0);
@@ -38,14 +34,14 @@ function App() {
         setRequestDone(true);
       })
       .catch((err) => {
-        if (err.response.status == 403) {
+        if (err.response.status === 403) {
           alert("Kirjaudu sisään uudelleen");
           auth?.signout();
           navigate("/login", { replace: true });
         }
         console.log(err);
       });
-  }, []);
+  }, [auth, navigate]);
   let onClick = () => {
     setBtnClicked(!btnClicked);
     console.log(randomNumber);
@@ -59,7 +55,7 @@ function App() {
         setEditModalOpen={setEditModalOpen}
       />
       <div className="Container">
-        {foods.length != 0 ? (
+        {foods.length !== 0 ? (
           <div style={{ fontSize: "3rem" }}>
             {btnClicked ? (
               <RandomReveal
@@ -80,7 +76,7 @@ function App() {
         )}
 
         <Button
-          disabled={!requestDone}
+          disabled={!requestDone || foods.length === 0}
           variant="contained"
           size="large"
           onClick={onClick}
