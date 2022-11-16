@@ -71,8 +71,8 @@ export default function LoginPage() {
         >
           {!loginType ? "Kirjaudu sisään" : "Rekisteröidy"}
         </Button>
-        <Typography sx={{ color: "red" }}>
-          {auth?.authFailed ? "Kirjautuminen epäonnistui" : ""}
+        <Typography sx={auth?.authFailed ? { color: "red" } : { color: "green" }}>
+          {auth?.authFailed ? "Kirjautuminen epäonnistui" : auth?.signupSuccessful && loginType ? "Rekisteröity onnistuneesti" : ""}
         </Typography>
         <Link onClick={() => setLoginType(!loginType)} variant="body2">
           {loginType ? "Kirjaudu sisään" : "Rekisteröidy"}

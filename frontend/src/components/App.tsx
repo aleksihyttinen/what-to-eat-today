@@ -29,8 +29,8 @@ function App() {
     axios
       .get("https://what-to-eat-today.azurewebsites.net/foods")
       .then((response) => {
-        setFoods(response.data);
         console.log(response);
+        setFoods(response.data);
         setRequestDone(true);
       })
       .catch((err) => {
@@ -44,7 +44,6 @@ function App() {
   }, [auth, navigate]);
   let onClick = () => {
     setBtnClicked(!btnClicked);
-    console.log(randomNumber);
     setRandomNumber(Math.floor(Math.random() * foods.length));
   };
 

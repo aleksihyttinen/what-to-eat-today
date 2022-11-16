@@ -31,7 +31,6 @@ const connectionFunctions = {
     const db = client.db("foods");
     const collection = db.collection("foods");
     const deleteResult = await collection.deleteOne({ _id: new ObjectID(id) });
-    console.log(deleteResult);
     return deleteResult;
   },
   addFood: async (foodName: string, userId: string) => {
@@ -43,11 +42,9 @@ const connectionFunctions = {
       user_id: userId,
       name: foodName,
     });
-    console.log(insertResult);
     return insertResult;
   },
   findUser: async (userName: string): Promise<IUser> => {
-    console.log(userName);
     await client.connect();
     console.log("Connected successfully to server");
     const db = client.db("users");

@@ -30,7 +30,6 @@ export default function AddFood({ modalOpen, setModalOpen, setFoods }: IProps) {
         name: newFood,
       })
       .then((response) => {
-        console.log(newFood);
         console.log(response);
         setModalOpen(false);
         if (response.status === 201) {

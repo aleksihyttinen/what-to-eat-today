@@ -34,7 +34,6 @@ app.put(
   authenticateToken,
   async (req: express.Request, res: express.Response) => {
     let foods: IFood[] = req.body;
-    console.log(foods);
     try {
       foods.map((food) => connection.editFood(food._id, food.name));
       res.statusCode = 200;
@@ -72,7 +71,6 @@ app.post(
   async (req: express.Request, res: express.Response) => {
     let foodName: string = req.body.name;
     let userId: string = req.body.user._id;
-    console.log(req.body);
     try {
       let result = await connection.addFood(foodName, userId);
       res.statusCode = 201;

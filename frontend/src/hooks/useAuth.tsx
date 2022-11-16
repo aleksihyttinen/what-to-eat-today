@@ -15,8 +15,9 @@ export const useAuth = () => {
 };
 // Provider hook that creates auth object and handles state
 function useProvideAuth() {
-  const [authenticated, setAuthenticated] = useState(false);
-  const [authFailed, setAuthFailed] = useState(false);
+  const [authenticated, setAuthenticated] = useState<boolean>(false);
+  const [authFailed, setAuthFailed] = useState<boolean>(false);
+  const [signupSuccessful, setSignupSuccessful]  = useState<boolean>(false);
 
   const signin = ({ userName, userPassword }: IUser) => {
     axios
@@ -25,7 +26,7 @@ function useProvideAuth() {
         password: userPassword,
       })
       .then((response) => {
-        console.log(response);
+        console.log(response.data.msg);
         if (response.data.msg === "Authenticated") {
           setAuthenticated(true);
           localStorage.setItem("user", response.data.accessToken);
@@ -49,6 +50,10 @@ function useProvideAuth() {
       })
       .then((response) => {
         console.log(response);
+        setSignupSuccessful(true);
+      }).catch((err) => {
+        console.log(err);
+        setAuthFailed(true);
       });
   };
   const signout = () => {
@@ -59,6 +64,7 @@ function useProvideAuth() {
   return {
     authenticated,
     authFailed,
+    signupSuccessful,
     signin,
     signup,
     signout,

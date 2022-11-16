@@ -36,7 +36,6 @@ export default function EditFoods({
     setModalOpen(false);
   };
   const handleChange = (index: number) => (e: any) => {
-    console.log(e.target.value);
     let tempArr = [...editedFoods];
     tempArr[index].name = e.target.value;
     setEditedFoods(tempArr);
@@ -60,7 +59,6 @@ export default function EditFoods({
       });
   };
   const deleteFood = (id: any) => () => {
-    console.log(id);
     axios
       .delete(`https://what-to-eat-today.azurewebsites.net/foods/${id}`)
       .then((response) => {
