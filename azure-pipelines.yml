@@ -17,10 +17,7 @@ steps:
 
 - script: |
     npm install
-    tsc
     cd frontend
     npm install
     npm run build
-    cd ..
-    node dist/index.js
   displayName: 'npm install and build'
